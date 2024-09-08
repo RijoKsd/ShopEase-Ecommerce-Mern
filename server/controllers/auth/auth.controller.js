@@ -14,9 +14,9 @@ exports.register = async (req, res) => {
   try {
     const user = await User.findOne({ email });
      if (user) {
-      return res
+       return res
         .status(400)
-        .json({ message: "User already exists", success: false });
+        .json({ message: "User already exists with this email", success: false });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
@@ -46,6 +46,27 @@ exports.login = async (req, res) => {
       message: "Please provide all the required fields",
       success: false,
     });
+  }
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Invalid email", success: false });
+    }
+    const isPasswordCorrect = await bcrypt.compare( password, user.password);
+    if (!isPasswordCorrect) {
+      return res
+        .status(400)
+        .json({ message: "Invalid password", success: false });
+    }
+    
+  } catch (error) {
+    console.error("Error while logging in user", error.message);
+    return res
+      .status(500)
+      .json({ message: "Error while logging in user", success: false });
+    
   }
 };
 

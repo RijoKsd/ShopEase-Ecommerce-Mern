@@ -3,11 +3,46 @@ import axios from "axios";
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
-export const register = createAsyncThunk("auth/register", async (data) => {
-  const response = await axios.post(`${backendURL}/api/auth/register`, data, {
+export const register = createAsyncThunk(
+  "auth/register",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${backendURL}/api/auth/register`,
+        data,
+        {
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      //  If server responded with an error, reject the promise
+       if (error?.response?.data) {
+        return rejectWithValue(error?.response?.data);
+      }
+      return rejectWithValue({
+        message: "An error occurred while registering",
+        success: false,
+      });
+    }
+  }
+);
+
+export const login = createAsyncThunk("auth/login", async (data, { rejectWithValue }) => {
+ try{
+   const response = await axios.post(`${backendURL}/api/auth/login`, data, {
     withCredentials: true,
   });
   return response.data;
+ }catch(error){
+   if(error?.response?.data){
+     return rejectWithValue(error?.response?.data);
+   }
+   return rejectWithValue({
+     message: "An error occurred while logging in",
+     success: false,
+   });
+ }
 });
 
 const initialState = {
@@ -21,7 +56,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-        // need to work  on this
+      // need to work  on this
     },
   },
   extraReducers: (builder) => {

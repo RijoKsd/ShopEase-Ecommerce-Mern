@@ -21,19 +21,23 @@ export default function Register() {
   function handleSubmit() {
     dispatch(register(formData))
       .then((data) => {
-        console.log(data?.payload?.message, "res");
-        if (data?.payload?.success) {
+         if (data?.payload?.success) {
           toast({
             title: data?.payload?.message,
             className: "bg-green-500 text-white",
             duration: 2000,
           });
           navigate("/auth/login");
+        }else{
+           toast({
+            title: data?.payload?.message,
+            variant: "destructive",
+            duration: 2000,
+          });
         }
       })
       .catch((err) => {
-        console.log(err, "err");
-        toast({
+         toast({
           title: "Registration Failed",
           description: "Please try again",
           variant: "destructive",
