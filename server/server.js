@@ -9,24 +9,24 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     allowedHeaders: [
-//       "Content-Type",
-//       "Authorization",
-//       "Cache-Control",
-//       "Expires",
-//       "Pragma",
-//     ],
-//     credentials: true
-//   })
-// );
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cache-Control",
+      "Expires",
+      "Pragma",
+    ],
+    credentials: true
+  })
+);
+ 
+
+ 
 app.use(cookieParser());
-
-connectDB();
-
+ 
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
