@@ -2,6 +2,8 @@ const express = require("express");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+// routes
+const authRoutes = require("./routes/auth/auth.routes")
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,6 +30,8 @@ connectDB();
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
+
+app.use("/api/auth", authRoutes);
 
 const startServer = async () => {
   try {
