@@ -1,6 +1,6 @@
 const User = require("../../models/user");
 const bcrypt = require("bcryptjs");
- const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 // Register a new user
 exports.register = async (req, res) => {
@@ -14,12 +14,10 @@ exports.register = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      return res
-        .status(400)
-        .json({
-          message: "User already exists with this email",
-          success: false,
-        });
+      return res.status(400).json({
+        message: "User already exists with this email",
+        success: false,
+      });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
@@ -74,18 +72,15 @@ exports.login = async (req, res) => {
       }
     );
 
-    return res.cookie('token', token, {httpOnly: true, secure: false}).json({
+    return res.cookie("token", token, { httpOnly: true, secure: false }).json({
       message: "User logged in successfully",
       success: true,
-      user:{
+      user: {
         id: user._id,
         role: user.role,
         email: user.email,
-      }
-    })
-
-  
-
+      },
+    });
   } catch (error) {
     console.error("Error while logging in user", error.message);
     return res
@@ -96,4 +91,35 @@ exports.login = async (req, res) => {
 
 // Logout a user
 
-exports.logout = async (req, res) => {};
+exports.logout = async (req, res) => {
+  res.clearCookie("token");
+  return res.status(200).json({
+    message: "User logged out successfully",
+    success: true,
+  });
+};
+
+// Check if the user is authenticated
+
+exports.checkAuth = async (req,res) =>{
+  try{
+    const user = req.user;
+    if(user){
+      return res.status(200).json({
+        message: "User is authenticated",
+        success: true,
+        user
+      })
+    }
+    return res.status(401).json({
+      message: "User is not authenticated",
+      success: false,
+    });
+  }catch(err){
+    console.error("Error while checking authentication", err.message);
+    return res
+      .status(500)  
+      .json({ message: "Error while checking authentication", success: false });
+  }
+
+}
