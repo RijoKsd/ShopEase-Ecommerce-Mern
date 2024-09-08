@@ -1,6 +1,6 @@
 const User = require("../../models/user");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+ const jwt = require("jsonwebtoken");
 
 // Register a new user
 exports.register = async (req, res) => {
@@ -13,10 +13,13 @@ exports.register = async (req, res) => {
   }
   try {
     const user = await User.findOne({ email });
-     if (user) {
-       return res
+    if (user) {
+      return res
         .status(400)
-        .json({ message: "User already exists with this email", success: false });
+        .json({
+          message: "User already exists with this email",
+          success: false,
+        });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
@@ -50,23 +53,44 @@ exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Invalid email", success: false });
+      return res.status(400).json({ message: "Invalid email", success: false });
     }
-    const isPasswordCorrect = await bcrypt.compare( password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
       return res
         .status(400)
         .json({ message: "Invalid password", success: false });
     }
-    
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+        email: user.email,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    return res.cookie('token', token, {httpOnly: true, secure: false}).json({
+      message: "User logged in successfully",
+      success: true,
+      user:{
+        id: user._id,
+        role: user.role,
+        email: user.email,
+      }
+    })
+
+  
+
   } catch (error) {
     console.error("Error while logging in user", error.message);
     return res
       .status(500)
       .json({ message: "Error while logging in user", success: false });
-    
   }
 };
 

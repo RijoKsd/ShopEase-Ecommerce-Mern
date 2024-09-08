@@ -17,7 +17,7 @@ export const register = createAsyncThunk(
       return response.data;
     } catch (error) {
       //  If server responded with an error, reject the promise
-       if (error?.response?.data) {
+      if (error?.response?.data) {
         return rejectWithValue(error?.response?.data);
       }
       return rejectWithValue({
@@ -28,22 +28,25 @@ export const register = createAsyncThunk(
   }
 );
 
-export const login = createAsyncThunk("auth/login", async (data, { rejectWithValue }) => {
- try{
-   const response = await axios.post(`${backendURL}/api/auth/login`, data, {
-    withCredentials: true,
-  });
-  return response.data;
- }catch(error){
-   if(error?.response?.data){
-     return rejectWithValue(error?.response?.data);
-   }
-   return rejectWithValue({
-     message: "An error occurred while logging in",
-     success: false,
-   });
- }
-});
+export const login = createAsyncThunk(
+  "auth/login",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${backendURL}/api/auth/login`, data, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data) {
+        return rejectWithValue(error?.response?.data);
+      }
+      return rejectWithValue({
+        message: "An error occurred while logging in",
+        success: false,
+      });
+    }
+  }
+);
 
 const initialState = {
   isAuthenticated: false,
@@ -51,6 +54,7 @@ const initialState = {
   user: null,
 };
 
+ 
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -66,11 +70,24 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isAuthenticated = true;
+        state.isAuthenticated = false;
         // state.user = action.payload;
         state.user = null;
       })
       .addCase(register.rejected, (state) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+      })
+      .addCase(login.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = action.payload.success ? true : false;
+        state.user = action.payload.success ? action.payload.user : null;
+      })
+      .addCase(login.rejected, (state) => {
         state.isLoading = false;
         state.isAuthenticated = false;
         state.user = null;

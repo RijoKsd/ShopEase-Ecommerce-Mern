@@ -1,9 +1,10 @@
 import CommonForm from "@/components/common/Form";
 import { loginFormControls } from "@/config";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-
- 
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "@/store/auth-slice";
+import { useToast } from "@/hooks/use-toast";
 
 const initialState = {
   email: "",
@@ -11,9 +12,36 @@ const initialState = {
 };
 export default function Login() {
   const [formData, setFormData] = useState(initialState);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   function handleSubmit() {
-    console.log(formData);
+    try {
+      dispatch(login(formData)).then((data) => {
+        if (data?.payload?.success) {
+          toast({
+            title: data?.payload?.message,
+            className: "bg-green-500 text-white",
+            duration: 2000,
+          });
+        } else {
+          toast({
+            title: data?.payload?.message,
+            variant: "destructive",
+            duration: 2000,
+          });
+        }
+      });
+
+    } catch (err) {
+     toast({
+       title: "Registration Failed",
+       description: "Please try again",
+       variant: "destructive",
+       duration: 2000,
+     });
+    }
   }
 
   return (
