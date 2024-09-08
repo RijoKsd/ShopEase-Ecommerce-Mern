@@ -13,13 +13,13 @@ import ShoppingHome from "./pages/shopping-view/Home";
 import ShoppingListing from "./pages/shopping-view/Listing";
 import ShoppingCheckout from "./pages/shopping-view/Checkout";
 import ShoppingAccount from "./pages/shopping-view/Account";
-import CheckAuth from "./pages/common/CheckAuth";
+import CheckAuth from "./components/common/CheckAuth";
 import UnAuthPage from "./pages/unauthorized";
 
 export default function App() {
-  const isAuthenticated = true;
+  const isAuthenticated = false;
   const user = {
-    role: "user",
+    role: null,
   }
   return (
     <div className="flex flex-col overflow-hidden bg-white">
