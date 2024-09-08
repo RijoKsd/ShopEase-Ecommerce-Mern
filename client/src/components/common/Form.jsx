@@ -1,3 +1,4 @@
+import React from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -25,9 +26,14 @@ export default function CommonForm({
 }) {
   // Function to render the input component based on the control type
   function renderInputComponent(control) {
-    // Get the value of the control from the form data
     const value = formData[control.name] || "";
-    // Check if the control type is Input, Textarea or Select
+
+    // Handle the change event for the input field
+    const handleChange = (e) => {
+      const newValue = e.target ? e.target.value : e;
+      setFormData({ ...formData, [control.name]: newValue });
+    };
+
     switch (control.componentType) {
       case types.INPUT:
         return (
@@ -37,9 +43,7 @@ export default function CommonForm({
             placeholder={control.placeholder}
             id={control.name}
             value={value}
-            onChange={(e) =>
-              setFormData({ ...formData, [control.name]: e.target.value })
-            }
+            onChange={handleChange}
           />
         );
       case types.TEXTAREA:
@@ -50,30 +54,21 @@ export default function CommonForm({
             rows={4}
             id={control.name}
             value={value}
-            onChange={(e) =>
-              setFormData({ ...formData, [control.name]: e.target.value })
-            }
+            onChange={handleChange}
           />
         );
       case types.SELECT:
         return (
-          <Select
-            defaultValue={value}
-            onValueChange={(value) =>
-              setFormData({ ...formData, [control.name]: value })
-            }
-          >
+          <Select value={value} onValueChange={handleChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder={control.placeholder} />
             </SelectTrigger>
             <SelectContent>
-              {control.options && control.options.length > 0
-                ? control.options.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))
-                : null}
+              {control.options?.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         );
@@ -81,22 +76,22 @@ export default function CommonForm({
         return null;
     }
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(e);
+  };
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-3">
         {formControls.map((control) => (
           <div key={control.name} className="grid w-full gap-1.5">
-            <Label className="mb-1" htmlFor={control.name}>
-              {control.label}
-            </Label>
-            {
-              // Function to render the input component based on the control type
-              renderInputComponent(control)
-            }
+            <Label htmlFor={control.name}>{control.label}</Label>
+            {renderInputComponent(control)}
           </div>
         ))}
       </div>
-      <Button type="submit" className="w-full mt-2" >
+      <Button type="submit" className="w-full mt-4">
         {buttonText || "Submit"}
       </Button>
     </form>
