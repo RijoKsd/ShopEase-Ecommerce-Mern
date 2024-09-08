@@ -65,7 +65,7 @@ export default function CommonForm({
             </SelectTrigger>
             <SelectContent>
               {control.options?.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem key={option.id} value={option.label}>
                   {option.label}
                 </SelectItem>
               ))}
@@ -86,7 +86,9 @@ export default function CommonForm({
       <div className="flex flex-col gap-3">
         {formControls.map((control) => (
           <div key={control.name} className="grid w-full gap-1.5">
-            <Label htmlFor={control.name}>{control.label}</Label>
+            <Label htmlFor={control.name} className="text-sm mt-1">
+              {control.label}
+            </Label>
             {renderInputComponent(control)}
           </div>
         ))}
