@@ -1,3 +1,4 @@
+import { LayoutDashboard, ShoppingBag, ClipboardList } from "lucide-react";
 
 // This is the input fields for the register form
 export const registerFormControls = [
@@ -22,7 +23,6 @@ export const registerFormControls = [
     componentType: "Input",
     label: "Password",
   },
-    
 ];
 
 export const loginFormControls = [
@@ -39,5 +39,26 @@ export const loginFormControls = [
     placeholder: "Enter your password",
     componentType: "Input",
     label: "Password",
+  },
+];
+
+export const adminSidebarMenuItems = [
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    path: "/admin/dashboard",
+  },
+  {
+    id: "products",
+    label: "Products",
+    icon: ShoppingBag,
+    path: "/admin/products",
+  },
+  {
+    id: "orders",
+    label: "Orders",
+    icon: ClipboardList,
+    path: "/admin/orders",
   },
 ];
