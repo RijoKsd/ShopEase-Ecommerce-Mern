@@ -11,7 +11,7 @@ const initialState = {
 };
 export default function Login() {
   const [formData, setFormData] = useState(initialState);
-  
+
   function handleSubmit() {
     console.log(formData);
   }
@@ -23,7 +23,7 @@ export default function Login() {
           Sign in to your account
         </h1>
         <p className="mt-2 ">
-           Don't have an account?
+          Don't have an account?
           <Link
             to="/auth/register"
             className="font-medium text-primary hover:underline ml-1"
@@ -37,7 +37,7 @@ export default function Login() {
         buttonText={"Sign In"}
         formData={formData}
         setFormData={setFormData}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
       />
     </div>
   );

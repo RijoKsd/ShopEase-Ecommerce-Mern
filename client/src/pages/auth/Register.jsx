@@ -33,14 +33,12 @@ export default function Register() {
           </Link>
         </p>
       </div>
-      <CommonForm 
-        formControls={ registerFormControls}
+      <CommonForm
+        formControls={registerFormControls}
         buttonText={"Sign Up"}
         formData={formData}
         setFormData={setFormData}
-        onSubmit={onSubmit}
-     
-
+        onSubmit={handleSubmit}
       />
     </div>
   );
