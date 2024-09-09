@@ -11,7 +11,6 @@ import CommonForm from "@/components/common/Form";
 import { addProductFormElements } from "@/config";
 import ProductImageUpload from "@/components/admin-view/ImageUpload";
 
-
 const initialState = {
   image: null,
   title: "",
@@ -21,12 +20,13 @@ const initialState = {
   price: "",
   salePrice: "",
   totalStock: "",
-}
+};
 export default function AdminProducts() {
   const [openCreateProduct, setOpenCreateProduct] = useState(false);
   const [formData, setFormData] = useState(initialState);
   const [imageFile, setImageFile] = useState(null);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
+  const [imageLoading, setImageLoading] = useState(false);
 
   function handleSubmit() {
     console.log(formData);
@@ -52,8 +52,8 @@ export default function AdminProducts() {
             <ProductImageUpload
               imageFile={imageFile}
               setImageFile={setImageFile}
-              uploadedImageUrl={uploadedImageUrl}
               setUploadedImageUrl={setUploadedImageUrl}
+              setImageLoading={setImageLoading}
             />
             <div className="py-6">
               <CommonForm

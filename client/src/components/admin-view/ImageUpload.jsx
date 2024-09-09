@@ -1,16 +1,18 @@
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
+import axios from "axios";
 
 export default function ProductImageUpload({
   imageFile,
   setImageFile,
-  uploadedImageUrl,
+  setImageLoading,
   setUploadedImageUrl,
 }) {
   const inputRef = useRef(null);
+  const backendURL = import.meta.env.VITE_BACKEND_URL;
 
   function handleImageFileChange(event) {
     const selectedImage = event.target.files?.[0];
@@ -32,6 +34,26 @@ export default function ProductImageUpload({
     }
   }
 
+  async function uploadImageToCloudinary() {
+    setImageLoading(true);
+    try {
+      const data = new FormData();
+      data.append("my_file", imageFile);
+      const response = await axios.post(
+        `${backendURL}/api/admin/products/upload-image`,
+        data
+      );
+      if (response?.data?.success) setUploadedImageUrl(response.data.result);
+      setImageLoading(false);
+    } catch (error) {
+      console.log(error, "error uploading image to cloudinary");
+    }
+  }
+
+  useEffect(() => {
+    if (imageFile !== null) uploadImageToCloudinary();
+  }, [imageFile]);
+
   return (
     <div className="w-full max-w-md mx-auto mt-4">
       <Label className="block text-lg font-semibold mb-2">Upload Image</Label>
@@ -46,7 +68,7 @@ export default function ProductImageUpload({
           className="hidden"
           ref={inputRef}
           onChange={handleImageFileChange}
-          accept=  "image/*"
+          accept="image/*"
         />
         {!imageFile ? (
           <Label
