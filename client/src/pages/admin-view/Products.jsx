@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
- import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -12,6 +12,7 @@ import ProductImageUpload from "@/components/admin-view/ImageUpload";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewProduct, fetchAllProducts } from "@/store/admin/products-slice";
 import { useToast } from "@/hooks/use-toast";
+import AdminProductTile from "./ProductTile";
 
 const initialState = {
   image: null,
@@ -31,7 +32,7 @@ export default function AdminProducts() {
   const [imageLoading, setImageLoading] = useState(false);
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.adminProducts);
-const { toast } = useToast();
+  const { toast } = useToast();
 
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -43,21 +44,22 @@ const { toast } = useToast();
         ...formData,
         image: uploadedImageUrl,
       })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchAllProducts());
-        setImageFile(null);
-        setUploadedImageUrl("");
-        setFormData(initialState);
-        toast({
-          title: "Product Added Successfully",
-          className: "bg-green-500 text-white",
-          duration: 2000,
-        });
-        setOpenCreateProduct(false);
-
-      }
-    });
+    )
+      .then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchAllProducts());
+          setImageFile(null);
+          setUploadedImageUrl("");
+          setFormData(initialState);
+          toast({
+            title: "Product Added Successfully",
+            className: "bg-green-500 text-white",
+            duration: 2000,
+          });
+          setOpenCreateProduct(false);
+        }
+      })
+      .catch((err) => console.error("Error in adding product", err));
   }
   return (
     <Fragment>
@@ -66,36 +68,43 @@ const { toast } = useToast();
           Create Product
         </Button>
       </div>
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-        <Sheet
-          open={openCreateProduct}
-          onOpenChange={() => {
-            setOpenCreateProduct(false);
-          }}
-        >
-          <SheetContent side="right" className="overflow-auto">
-            <SheetHeader>
-              <SheetTitle className=" my-5">Add New Product</SheetTitle>
-            </SheetHeader>
-            <ProductImageUpload
-              imageFile={imageFile}
-              setImageFile={setImageFile}
-              setUploadedImageUrl={setUploadedImageUrl}
-              setImageLoading={setImageLoading}
-              imageLoading={imageLoading}
-            />
-            <div className="py-6">
-              <CommonForm
-                formControls={addProductFormElements}
-                buttonText={"Add Product"}
-                formData={formData}
-                setFormData={setFormData}
-                onSubmit={handleSubmit}
-              />
-            </div>
-          </SheetContent>
-        </Sheet>
+      {/* This is for displaying all the products */}
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 ">
+        {products && products.length > 0
+          ? products.map((productItem) => (
+              <AdminProductTile product={productItem} key={productItem._id} />
+            ))
+          : null}
       </div>
+      {/*   This is for opening the the sidebar for adding new product */}
+      <Sheet
+        open={openCreateProduct}
+        onOpenChange={() => {
+          setOpenCreateProduct(false);
+        }}
+      >
+        <SheetContent side="right" className="overflow-auto">
+          <SheetHeader>
+            <SheetTitle className=" my-5">Add New Product</SheetTitle>
+          </SheetHeader>
+          <ProductImageUpload
+            imageFile={imageFile}
+            setImageFile={setImageFile}
+            setUploadedImageUrl={setUploadedImageUrl}
+            setImageLoading={setImageLoading}
+            imageLoading={imageLoading}
+          />
+          <div className="py-6">
+            <CommonForm
+              formControls={addProductFormElements}
+              buttonText={"Add Product"}
+              formData={formData}
+              setFormData={setFormData}
+              onSubmit={handleSubmit}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
     </Fragment>
   );
 }
