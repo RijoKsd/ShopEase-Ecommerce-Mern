@@ -79,7 +79,7 @@ export default function CommonForm({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(e);
+     onSubmit(e);
   };
   return (
     <form onSubmit={handleSubmit}>
