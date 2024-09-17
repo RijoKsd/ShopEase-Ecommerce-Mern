@@ -138,13 +138,15 @@ exports.editProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id);
-    if (!product) {
+    // Find and delete the product directly
+    const deletedProduct = await Product.findByIdAndDelete(id);
+
+    if (!deletedProduct) {
       return res
         .status(404)
         .json({ message: "Product not found", success: false });
     }
-    await product.findByIdAndDelete(id);
+
     return res.status(200).json({
       success: true,
       message: "Product deleted successfully",

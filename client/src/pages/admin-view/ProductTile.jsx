@@ -3,9 +3,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 export default function AdminProductTile({
   product,
+  setFormData,
+  handleDelete,
   setCurrentEditedId,
   setOpenCreateProduct,
-  setFormData,
 }) {
   return (
     <Card className=" w-full max-w-sm mx-auto">
@@ -40,7 +41,7 @@ export default function AdminProductTile({
             setFormData(product);
           }
         }>Edit</Button>
-        <Button variant="destructive">Delete</Button>
+        <Button variant="destructive" onClick={() => handleDelete(product._id)}>Delete</Button>
       </CardFooter>
     </Card>
   );

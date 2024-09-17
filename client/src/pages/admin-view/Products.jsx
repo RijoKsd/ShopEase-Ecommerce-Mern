@@ -11,8 +11,9 @@ import { addProductFormElements } from "@/config";
 import ProductImageUpload from "@/components/admin-view/ImageUpload";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addNewProduct,
   editProduct,
+  deleteProduct,
+  addNewProduct,
   fetchAllProducts,
 } from "@/store/admin/products-slice";
 import { useToast } from "@/hooks/use-toast";
@@ -87,11 +88,27 @@ export default function AdminProducts() {
           .catch((err) => console.error("Error in adding product", err));
   }
 
+  // This function check if the form has value for all the fields or not and return true or false
+  // if the form return false, it will disable the submit button
   function isFormValid() {
     return Object.keys(formData)
       .map((key) => formData[key] !== "")
       .every((item) => item);
   }
+
+  const handleDelete = (id) =>{
+    dispatch(deleteProduct(id)).then((data)=>{
+       if(data?.payload?.success){
+        dispatch(fetchAllProducts());
+        toast({
+          title: "Product Deleted Successfully",
+          className: "bg-green-500 text-white",
+          duration: 2000,
+        })
+      }
+    })
+  }
+
   return (
     <Fragment>
       <div className="mb-5 flex justify-end w-full ">
@@ -109,6 +126,7 @@ export default function AdminProducts() {
                 setCurrentEditedId={setCurrentEditedId}
                 setOpenCreateProduct={setOpenCreateProduct}
                 setFormData={setFormData}
+                handleDelete={handleDelete}
               />
             ))
           : null}
