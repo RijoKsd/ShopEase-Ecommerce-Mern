@@ -1,5 +1,5 @@
 const { uploadImageToCloudinary } = require("../../helpers/cloudinary");
-const product = require("../../models/product");
+const Product = require("../../models/product");
 
 // exports.handleImageUpload = async (req, res) => {
 //   try {
@@ -49,7 +49,7 @@ exports.addProduct = async (req, res) => {
   } = req.body;
 
   try {
-    const newProduct = new product({
+    const newProduct = new Product({
       title,
       description,
       category,
@@ -76,7 +76,7 @@ exports.addProduct = async (req, res) => {
 // Fetch all products
 exports.fetchAllProducts = async (req, res) => {
   try {
-    const products = await product.find();
+    const products = await Product.find();
     return res.status(200).json({
       success: true,
       message: "All products fetched successfully",
@@ -92,7 +92,7 @@ exports.fetchAllProducts = async (req, res) => {
 
 // Edit product
 exports.editProduct = async (req, res) => {
-  const {
+   const {
     title,
     description,
     category,
@@ -104,8 +104,7 @@ exports.editProduct = async (req, res) => {
   } = req.body;
   try {
     const { id } = req.params;
-
-    const product = await product.findById(id);
+    const product = await Product.findById(id);
     if (!product) {
       return res
         .status(404)
@@ -139,7 +138,7 @@ exports.editProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await product.findById(id);
+    const product = await Product.findById(id);
     if (!product) {
       return res
         .status(404)

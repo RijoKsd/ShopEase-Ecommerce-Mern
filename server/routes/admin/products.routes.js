@@ -3,7 +3,7 @@ const {
   handleImageUpload,
   addProduct,
   fetchAllProducts,
-  editProduct,  
+  editProduct,
   deleteProduct,
 } = require("../../controllers/admin/products.controller");
 const { upload } = require("../../helpers/cloudinary");

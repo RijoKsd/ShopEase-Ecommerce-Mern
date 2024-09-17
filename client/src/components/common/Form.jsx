@@ -23,6 +23,7 @@ export default function CommonForm({
   setFormData,
   formData,
   buttonText,
+  isBtnDisabled,
 }) {
   // Function to render the input component based on the control type
   function renderInputComponent(control) {
@@ -79,7 +80,7 @@ export default function CommonForm({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-     onSubmit(e);
+    onSubmit(e);
   };
   return (
     <form onSubmit={handleSubmit}>
@@ -93,7 +94,7 @@ export default function CommonForm({
           </div>
         ))}
       </div>
-      <Button type="submit" className="w-full mt-4">
+      <Button type="submit" className="w-full mt-4" disabled={isBtnDisabled}>
         {buttonText || "Submit"}
       </Button>
     </form>

@@ -1,8 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
-export default function AdminProductTile({ product }) {
-   return (
+export default function AdminProductTile({
+  product,
+  setCurrentEditedId,
+  setOpenCreateProduct,
+  setFormData,
+}) {
+  return (
     <Card className=" w-full max-w-sm mx-auto">
       <div className="relative">
         <img
@@ -28,7 +33,13 @@ export default function AdminProductTile({ product }) {
         </div>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
-        <Button>Edit</Button>
+        <Button onClick = {
+          ()=> {
+            setCurrentEditedId(product._id);
+            setOpenCreateProduct(true);
+            setFormData(product);
+          }
+        }>Edit</Button>
         <Button variant="destructive">Delete</Button>
       </CardFooter>
     </Card>

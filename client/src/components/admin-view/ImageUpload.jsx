@@ -8,6 +8,7 @@ import { Skeleton } from "../ui/skeleton";
 
 export default function ProductImageUpload({
   imageFile,
+  isEditMode,
   imageLoading,
   setImageFile,
   setImageLoading,
@@ -60,7 +61,9 @@ export default function ProductImageUpload({
     <div className="w-full max-w-md mx-auto mt-4">
       <Label className="block text-lg font-semibold mb-2">Upload Image</Label>
       <div
-        className="border-2 border-dashed rounded-lg p-4"
+        className={` ${
+          isEditMode ? "opacity-60" : ""
+        }border-2 border-dashed rounded-lg p-4`}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
@@ -71,11 +74,14 @@ export default function ProductImageUpload({
           ref={inputRef}
           onChange={handleImageFileChange}
           accept="image/*"
+          disabled={isEditMode}
         />
         {!imageFile ? (
           <Label
             htmlFor="image-upload"
-            className="flex flex-col items-center justify-center h-32 cursor-pointer"
+            className={` ${
+              isEditMode ? "cursor-not-allowed" : "cursor-pointer"
+            } flex flex-col items-center justify-center h-32 `}
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
             <span> Drag and drop or click to upload </span>
