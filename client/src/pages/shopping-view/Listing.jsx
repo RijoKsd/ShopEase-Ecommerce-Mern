@@ -9,8 +9,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown } from "lucide-react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllFilteredProducts } from "@/store/shop/products-slice";
+import ShoppingProductTile from "./ProductTile";
 
 export default function ShoppingListing() {
+  const dispatch = useDispatch();
+  const { products, isLoading } = useSelector((state) => state.shopProducts);
+
+  // Fetch list of products
+  useEffect(() => {
+    dispatch(fetchAllFilteredProducts());
+  }, [dispatch]);
+
+  console.log(products, "products from shop/products-slice");
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6  p-4 md:p-6">
       <ProductFilter />
@@ -33,7 +46,7 @@ export default function ShoppingListing() {
               <DropdownMenuContent align="end" className="w-[200px]">
                 <DropdownMenuRadioGroup>
                   {sortOptions.map((item) => (
-                    <DropdownMenuRadioItem key={item.id} >
+                    <DropdownMenuRadioItem key={item.id}>
                       {item.label}
                     </DropdownMenuRadioItem>
                   ))}
@@ -41,6 +54,14 @@ export default function ShoppingListing() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+        </div>
+        {/*  */}
+        <div className="grid grid-col-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+          {products &&
+            products.length > 0 &&
+            products.map((product) => (
+              <ShoppingProductTile key={product._id} product={product} />
+            ))}
         </div>
       </div>
     </div>
