@@ -66,7 +66,7 @@ export default function CommonForm({
             </SelectTrigger>
             <SelectContent>
               {control.options?.map((option) => (
-                <SelectItem key={option.id} value={option.label}>
+                <SelectItem key={option.id} value={option.id}>
                   {option.label}
                 </SelectItem>
               ))}

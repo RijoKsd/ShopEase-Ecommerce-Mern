@@ -25,7 +25,7 @@ function createSearchParamsHelper(filterParams) {
     }
   }
   console.log(queryParams, "queryParams");
-  return queryParams.join('&')
+  return queryParams.join("&");
 }
 
 export default function ShoppingListing() {
@@ -40,7 +40,6 @@ export default function ShoppingListing() {
   }
 
   function handleFilter(getSectionId, getCurrentOption) {
-    const test = filters;
     let cpyFilters = { ...filters };
     const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
 
@@ -77,8 +76,11 @@ export default function ShoppingListing() {
 
   // Fetch list of products
   useEffect(() => {
-    dispatch(fetchAllFilteredProducts());
-  }, [dispatch]);
+    if (filters !== null && sort !== null)
+      dispatch(
+        fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
+      );
+  }, [dispatch, sort, filters]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6  p-4 md:p-6">
