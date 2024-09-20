@@ -17,6 +17,7 @@ import {
 } from "@/store/shop/products-slice";
 import ShoppingProductTile from "./ProductTile";
 import { useSearchParams } from "react-router-dom";
+import ProductDetailsDialog from "@/components/shopping-view/ProductDetails";
 
 function createSearchParamsHelper(filterParams) {
   const queryParams = [];
@@ -38,7 +39,8 @@ export default function ShoppingListing() {
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-   function handleSort(value) {
+  const [isProductDetailsOpen, setIsProductDetailsOpen] = useState(false);
+  function handleSort(value) {
     setSort(value);
   }
 
@@ -65,6 +67,10 @@ export default function ShoppingListing() {
     sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
   }
 
+  function handleGetProductDetails(currentProductId) {
+    dispatch(fetchProductById(currentProductId));
+  }
+
   useEffect(() => {
     setSort("price-low-to-high");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
@@ -85,9 +91,11 @@ export default function ShoppingListing() {
       );
   }, [dispatch, sort, filters]);
 
-  function handleGetProductDetails(currentProductId) {
-    dispatch(fetchProductById(currentProductId));
-  }
+  useEffect(() => {
+    if (productDetails !== null) {
+      setIsProductDetailsOpen(true);
+    }
+  }, [productDetails]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6  p-4 md:p-6">
@@ -135,6 +143,12 @@ export default function ShoppingListing() {
             ))}
         </div>
       </div>
+
+      <ProductDetailsDialog
+        open={isProductDetailsOpen}
+        setOpen={setIsProductDetailsOpen}
+        productDetails={productDetails}
+      />
     </div>
   );
 }
