@@ -50,3 +50,28 @@ exports.getFilteredProducts = async (req, res) => {
     });
   }
 };
+
+exports.getProductById = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: product,
+    });
+    
+  } catch (error) {
+    console.error("Error getting product by id", error);
+    res.status(500).json({
+      success: false,
+      message: "Error getting product by id",
+    });
+    
+  }
+}

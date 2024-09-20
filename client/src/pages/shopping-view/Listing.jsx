@@ -11,7 +11,10 @@ import {
 import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllFilteredProducts } from "@/store/shop/products-slice";
+import {
+  fetchAllFilteredProducts,
+  fetchProductById,
+} from "@/store/shop/products-slice";
 import ShoppingProductTile from "./ProductTile";
 import { useSearchParams } from "react-router-dom";
 
@@ -24,18 +27,18 @@ function createSearchParamsHelper(filterParams) {
       queryParams.push(`${key}=${encodeURIComponent(paramsValue)}`);
     }
   }
-  console.log(queryParams, "queryParams");
   return queryParams.join("&");
 }
 
 export default function ShoppingListing() {
   const dispatch = useDispatch();
-  const { products, isLoading } = useSelector((state) => state.shopProducts);
+  const { products, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-
-  function handleSort(value) {
+   function handleSort(value) {
     setSort(value);
   }
 
@@ -82,6 +85,10 @@ export default function ShoppingListing() {
       );
   }, [dispatch, sort, filters]);
 
+  function handleGetProductDetails(currentProductId) {
+    dispatch(fetchProductById(currentProductId));
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6  p-4 md:p-6">
       <ProductFilter filters={filters} handleFilter={handleFilter} />
@@ -115,12 +122,16 @@ export default function ShoppingListing() {
             </DropdownMenu>
           </div>
         </div>
-        {/*  */}
+        {/*  product listing  */}
         <div className="grid grid-col-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
           {products &&
             products.length > 0 &&
             products.map((product) => (
-              <ShoppingProductTile key={product._id} product={product} />
+              <ShoppingProductTile
+                key={product._id}
+                product={product}
+                handleGetProductDetails={handleGetProductDetails}
+              />
             ))}
         </div>
       </div>
