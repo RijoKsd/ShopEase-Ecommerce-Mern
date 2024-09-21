@@ -9,3 +9,4 @@ router.get("/fetch-all-products", getFilteredProducts);
 router.get("/fetch-product-by-id/:id", getProductById);
 
 module.exports = router;
+ 

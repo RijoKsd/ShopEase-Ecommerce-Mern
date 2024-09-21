@@ -6,6 +6,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth/auth.routes")
 const adminProductsRoutes = require("./routes/admin/products.routes")
 const shopProductsRoutes = require("./routes/shop/product.routes")
+const shopCartRoutes = require("./routes/shop/cart.routes")
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -36,6 +37,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/admin/products", adminProductsRoutes);
 app.use("/api/shop/products", shopProductsRoutes);
+app.use("/api/shop/cart", shopCartRoutes);
 
 const startServer = async () => {
   try {
