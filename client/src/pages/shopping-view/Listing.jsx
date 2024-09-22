@@ -18,6 +18,8 @@ import {
 import ShoppingProductTile from "./ProductTile";
 import { useSearchParams } from "react-router-dom";
 import ProductDetailsDialog from "@/components/shopping-view/ProductDetails";
+import { addToCart } from "@/store/cart-slice";
+import { useToast } from "@/hooks/use-toast";
 
 function createSearchParamsHelper(filterParams) {
   const queryParams = [];
@@ -40,6 +42,8 @@ export default function ShoppingListing() {
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isProductDetailsOpen, setIsProductDetailsOpen] = useState(false);
+  const { user } = useSelector((state) => state.auth);
+  const { toast } = useToast();
   function handleSort(value) {
     setSort(value);
   }
@@ -69,6 +73,17 @@ export default function ShoppingListing() {
 
   function handleGetProductDetails(currentProductId) {
     dispatch(fetchProductById(currentProductId));
+  }
+  function handleAddToCart(productId) {
+    dispatch(addToCart({ userId: user?.id, productId, quantity: 1 })).then(data => {
+      if(data?.payload?.success) {
+        toast({
+          title: data?.payload?.message,
+          className: "bg-green-500 text-white",
+          duration: 2000,
+        });
+      }
+    })
   }
 
   useEffect(() => {
@@ -139,6 +154,7 @@ export default function ShoppingListing() {
                 key={product._id}
                 product={product}
                 handleGetProductDetails={handleGetProductDetails}
+                handleAddToCart={handleAddToCart}
               />
             ))}
         </div>

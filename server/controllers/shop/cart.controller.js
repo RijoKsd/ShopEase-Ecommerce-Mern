@@ -23,8 +23,8 @@ exports.addToCart = async (req, res) => {
     if (!cart) {
       cart = new Cart({ userId, items: [] });
     }
-    const existingItemIndex = cart.items.find(
-      (item) => item.productId.toString() === productId.toString()
+    const existingItemIndex = cart.items.findIndex(
+      (item) => item.productId.toString() === productId
     );
 
     if (existingItemIndex === -1) {
@@ -87,8 +87,8 @@ exports.getCartItems = async (req, res) => {
       success: true,
       message: "Cart items fetched successfully",
       data: {
-        // ...cart._doc,
-        ...cart.toObject(),
+        ...cart._doc,
+        // ...cart.toObject(),
         items: populatedCartItems,
       },
     });
@@ -145,7 +145,6 @@ exports.updateCartQuantity = async (req, res) => {
       quantity: item.quantity,
     }));
 
-
     return res.status(200).json({
       success: true,
       message: "Cart items fetched successfully",
@@ -184,21 +183,23 @@ exports.deleteFromCart = async (req, res) => {
         .json({ success: false, message: "Cart not found" });
     }
 
-    cart.items = cart.items.filter(item => item.productId._id.toString() !== productId)
+    cart.items = cart.items.filter(
+      (item) => item.productId._id.toString() !== productId
+    );
 
     await cart.save();
 
-    await Cart.populate({
+    await cart.populate({
       path: "items.productId",
       select: "title price image salePrice",
     });
 
     const populatedCartItems = cart.items.map((item) => ({
-      productId: item.productId?._id ?? null,
-      title: item.productId?.title ?? null,
-      price: item.productId?.price ?? null,
-      image: item.productId?.image ?? null,
-      salePrice: item.productId?.salePrice ?? null,
+      productId: item.productId ? item.productId._id : null,
+      image: item.productId ? item.productId.image : null,
+      title: item.productId ? item.productId.title : "Product not found",
+      price: item.productId ? item.productId.price : null,
+      salePrice: item.productId ? item.productId.salePrice : null,
       quantity: item.quantity,
     }));
 
@@ -206,13 +207,11 @@ exports.deleteFromCart = async (req, res) => {
       success: true,
       message: "Cart items fetched successfully",
       data: {
-        // ...cart._doc,
-        ...cart.toObject(),
+        ...cart._doc,
+        // ...cart.toObject(),
         items: populatedCartItems,
       },
     });
-
-   
   } catch (error) {
     console.error("Error removing product from cart:", error);
     res

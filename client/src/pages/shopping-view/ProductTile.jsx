@@ -3,7 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import React from "react";
 
-export default function ShoppingProductTile({ product, handleGetProductDetails }) {
+export default function ShoppingProductTile({
+  product,
+  handleGetProductDetails,
+  handleAddToCart,
+}) {
+
   return (
     <Card className="w-full max-w-sm mx-auto">
       <div
@@ -53,10 +58,15 @@ export default function ShoppingProductTile({ product, handleGetProductDetails }
             ) : null}
           </div>
         </CardContent>
-        <CardFooter>
-          <Button className="w-full">Add to cart</Button>
-        </CardFooter>
       </div>
+      <CardFooter>
+        <Button
+          className="w-full"
+          onClick={() => handleAddToCart(product?._id)}
+        >
+          Add to cart
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

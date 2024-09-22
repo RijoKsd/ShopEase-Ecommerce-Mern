@@ -10,44 +10,44 @@ const initialState = {
 
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
-  async (userId, productId, quantity) => {
-    const response = axios.post(`${backendURL}/api/shop/cart/add`, {
+  async ({userId, productId, quantity}) => {
+     const response = await axios.post(`${backendURL}/api/shop/cart/add`, {
       userId,
       productId,
       quantity,
     });
-    return (await response).data;
+    return response.data
   }
 );
 
 export const fetchCartItems = createAsyncThunk(
   "cart/fetchCartItems",
   async (userId) => {
-    const response = axios.get(`${backendURL}/api/shop/cart/get/${userId}`);
-    return (await response).data;
+    const response = await axios.get(`${backendURL}/api/shop/cart/get/${userId}`);
+    return response.data;
   }
 );
 
 
 export const deleteFromCart = createAsyncThunk(
   "cart/deleteFromCart",
-  async (userId, productId) => {
-    const response = axios.delete(
+  async ({userId, productId}) => {
+    const response = await axios.delete(
       `${backendURL}/api/shop/cart/delete/${userId}/${productId}`
     );
-    return (await response).data;
+    return response.data;
   }
 );
 
 export const updateCartQuantity = createAsyncThunk(
   "cart/updateCartQuantity",
   async (userId, productId, quantity) => {
-    const response = axios.put(`${backendURL}/api/shop/cart/update-quantity`, {
+    const response = await axios.put(`${backendURL}/api/shop/cart/update-quantity`, {
       userId,
       productId,
       quantity,
     });
-    return (await response).data;
+    return response.data;
   }
 );
 
@@ -105,3 +105,4 @@ const shoppingCartSlice = createSlice({
 });
 
 export default shoppingCartSlice.reducer;
+ 

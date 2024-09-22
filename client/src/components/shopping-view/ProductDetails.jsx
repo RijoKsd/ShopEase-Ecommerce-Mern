@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, DialogContent } from "../ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback } from "../ui/avatar";
@@ -13,7 +13,11 @@ export default function ProductDetailsDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]">
+      <DialogContent
+        className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]"
+        aria-describedby="product-description"
+      >
+        <DialogTitle className="sr-only">Product Details</DialogTitle>
         {/* product image */}
         <div className="relative overflow-hidden rounded-lg">
           <img
@@ -29,7 +33,10 @@ export default function ProductDetailsDialog({
           {/* product title and description */}
           <div>
             <h1 className="text-3xl font-bold">{productDetails?.title}</h1>
-            <p className="text-muted-foreground text-xl mb-5 mt-4">
+            <p
+              className="text-muted-foreground text-xl mb-5 mt-4"
+              id="product-description"
+            >
               {productDetails?.description}
             </p>
           </div>
@@ -94,8 +101,8 @@ export default function ProductDetailsDialog({
               </div>
             </div>
             <div className="mt-6 my-1 ml-1 flex gap-2">
-                <Input placeholder="Add a review" />
-                <Button>Submit</Button>
+              <Input placeholder="Add a review" />
+              <Button>Submit</Button>
             </div>
           </div>
         </div>

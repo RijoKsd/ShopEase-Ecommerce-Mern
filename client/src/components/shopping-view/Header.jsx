@@ -14,15 +14,13 @@ import {
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { logout } from "@/store/auth-slice";
+import UserCartWrapper from "./CartWrapper";
+import { useEffect, useState } from "react";
+import { fetchCartItems } from "@/store/cart-slice";
 
 export default function ShoppingHeader() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    dispatch(logout());
-  };
   //  This function renders the nav links
   const MenuItems = () => {
     return (
@@ -37,12 +35,41 @@ export default function ShoppingHeader() {
   };
 
   const HeaderRightContent = () => {
+      const dispatch = useDispatch();
+      const {  user } = useSelector((state) => state.auth);
+      const [openCart, setOpenCart] = useState(false);
+      const { cartItems } = useSelector((store) => store.shopCart);
+
+      const handleLogout = () => {
+        dispatch(logout());
+      };
+
+      useEffect(() => {
+        dispatch(fetchCartItems(user?.id));
+      }, [dispatch, openCart]);
+
+    
     return (
       <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-        <Button variant="outline" size="icon">
-          <ShoppingCart className="w-6 h-6" />
-          <span className="sr-only">Cart</span>
-        </Button>
+        <Sheet open={openCart} onOpenChange={() => setOpenCart(false)}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setOpenCart(true)}
+          >
+            <ShoppingCart className="w-6 h-6" />
+        
+            <span className="sr-only">Cart</span>
+          </Button>
+          {/* for viewing cart items */}
+          <UserCartWrapper
+            cartItems={
+              cartItems && cartItems.items && cartItems.items.length > 0
+                ? cartItems.items
+                : []
+            }
+          />
+        </Sheet>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar className="bg-black">
