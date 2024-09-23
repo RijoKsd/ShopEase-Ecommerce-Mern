@@ -205,7 +205,7 @@ exports.deleteFromCart = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Cart items fetched successfully",
+      message: "Product removed successfully",
       data: {
         ...cart._doc,
         // ...cart.toObject(),
