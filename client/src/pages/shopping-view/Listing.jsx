@@ -18,7 +18,7 @@ import {
 import ShoppingProductTile from "./ProductTile";
 import { useSearchParams } from "react-router-dom";
 import ProductDetailsDialog from "@/components/shopping-view/ProductDetails";
-import { addToCart } from "@/store/cart-slice";
+import { addToCart } from "@/store/shop/cart-slice";
 import { useToast } from "@/hooks/use-toast";
 
 function createSearchParamsHelper(filterParams) {
@@ -75,15 +75,17 @@ export default function ShoppingListing() {
     dispatch(fetchProductById(currentProductId));
   }
   function handleAddToCart(productId) {
-    dispatch(addToCart({ userId: user?.id, productId, quantity: 1 })).then(data => {
-      if(data?.payload?.success) {
-        toast({
-          title: data?.payload?.message,
-          className: "bg-green-500 text-white",
-          duration: 2000,
-        });
+    dispatch(addToCart({ userId: user?.id, productId, quantity: 1 })).then(
+      (data) => {
+        if (data?.payload?.success) {
+          toast({
+            title: data?.payload?.message,
+            className: "bg-green-500 text-white",
+            duration: 2000,
+          });
+        }
       }
-    })
+    );
   }
 
   useEffect(() => {

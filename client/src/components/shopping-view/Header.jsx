@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { logout } from "@/store/auth-slice";
 import UserCartWrapper from "./CartWrapper";
 import { useEffect, useState } from "react";
-import { fetchCartItems } from "@/store/cart-slice";
+import { fetchCartItems } from "@/store/shop/cart-slice";
 
 export default function ShoppingHeader() {
   const navigate = useNavigate();
@@ -35,20 +35,19 @@ export default function ShoppingHeader() {
   };
 
   const HeaderRightContent = () => {
-      const dispatch = useDispatch();
-      const {  user } = useSelector((state) => state.auth);
-      const [openCart, setOpenCart] = useState(false);
-      const { cartItems } = useSelector((store) => store.shopCart);
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.auth);
+    const [openCart, setOpenCart] = useState(false);
+    const { cartItems } = useSelector((store) => store.shopCart);
 
-      const handleLogout = () => {
-        dispatch(logout());
-      };
+    const handleLogout = () => {
+      dispatch(logout());
+    };
 
-      useEffect(() => {
-        dispatch(fetchCartItems(user?.id));
-      }, [dispatch, openCart]);
+    useEffect(() => {
+      dispatch(fetchCartItems(user?.id));
+    }, [dispatch, openCart]);
 
-    
     return (
       <div className="flex lg:items-center lg:flex-row flex-col gap-4">
         <Sheet open={openCart} onOpenChange={() => setOpenCart(false)}>
@@ -58,7 +57,7 @@ export default function ShoppingHeader() {
             onClick={() => setOpenCart(true)}
           >
             <ShoppingCart className="w-6 h-6" />
-        
+
             <span className="sr-only">Cart</span>
           </Button>
           {/* for viewing cart items */}

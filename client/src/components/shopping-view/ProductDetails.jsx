@@ -5,14 +5,40 @@ import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { StarIcon } from "lucide-react";
 import { Input } from "../ui/input";
- 
+import { addToCart } from "@/store/shop/cart-slice";
+import { useDispatch, useSelector } from "react-redux";
+import { useToast } from "@/hooks/use-toast";
+import { setProductDetailsNull } from "@/store/shop/products-slice";
+
 export default function ProductDetailsDialog({
   open,
   setOpen,
   productDetails,
 }) {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { toast } = useToast();
+
+  function handleAddToCart(productId) {
+    dispatch(addToCart({ userId: user?.id, productId, quantity: 1 })).then(
+      (data) => {
+        if (data?.payload?.success) {
+          toast({
+            title: data?.payload?.message,
+            className: "bg-green-500 text-white",
+            duration: 2000,
+          });
+        }
+      }
+    );
+  }
+  
+  function handleDialogClose() {
+    setOpen(false);
+    dispatch(setProductDetailsNull())
+  }
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogContent
         className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]"
         aria-describedby="product-description"
@@ -70,7 +96,13 @@ export default function ProductDetailsDialog({
           </div>
           {/*  button  */}
           <div className="my-5">
-            <Button className="w-full"> Add to cart</Button>
+            <Button
+              className="w-full"
+              onClick={() => handleAddToCart(productDetails?._id)}
+            >
+              {" "}
+              Add to cart
+            </Button>
           </div>
           <Separator />
 

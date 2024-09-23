@@ -2,22 +2,24 @@ import React from "react";
 import { Button } from "../ui/button";
 import { Minus, Plus, Trash } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteFromCart, updateCartQuantity } from "@/store/cart-slice";
+import { deleteFromCart, updateCartQuantity } from "@/store/shop/cart-slice";
 import { useToast } from "@/hooks/use-toast";
 
 export default function UserCartItemsContent({ cartItem }) {
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.auth);
-  const {toast} = useToast();
+  const { toast } = useToast();
 
   function handleUpdateQuantity(cartItem, action) {
-    
-    dispatch(updateCartQuantity({
-      userId: user?.id,
-      productId: cartItem?.productId,
-      quantity: action === "plus" ? cartItem?.quantity + 1 : cartItem?.quantity - 1
-    })).then(data=>{
-       if(data?.payload?.success){
+    dispatch(
+      updateCartQuantity({
+        userId: user?.id,
+        productId: cartItem?.productId,
+        quantity:
+          action === "plus" ? cartItem?.quantity + 1 : cartItem?.quantity - 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
         console.log("data dispatch");
         toast({
           title: "Quantity Updated Successfully",
@@ -25,7 +27,7 @@ export default function UserCartItemsContent({ cartItem }) {
           duration: 2000,
         });
       }
-    })
+    });
   }
   function handleCartItemDelete(currentItem) {
     dispatch(
@@ -55,7 +57,7 @@ export default function UserCartItemsContent({ cartItem }) {
             size="icon"
             className="h-8 w-8 rounded-full"
             onClick={() => handleUpdateQuantity(cartItem, "minus")}
-            disabled = {cartItem?.quantity === 1}
+            disabled={cartItem?.quantity === 1}
           >
             <Minus className="w-4 h-4" />
             <span className="sr-only">Minus</span>
