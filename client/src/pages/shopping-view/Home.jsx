@@ -17,8 +17,10 @@ import {
   Store,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useEffect, useState } from "react";
 export default function ShoppingHome() {
-  const slides = [bannerTwo, bannerThree, bannerOne];
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = [bannerTwo,bannerThree, bannerOne];
 
   const categories = [
     { id: "men", label: "Men", icon: User },
@@ -37,6 +39,14 @@ export default function ShoppingHome() {
     { id: "h&m", label: "H&M", icon: Store },
   ];
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [slides]);
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Home banners */}
@@ -46,13 +56,20 @@ export default function ShoppingHome() {
             src={slide}
             alt="banner"
             key={index}
-            className="absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000"
+            className={` ${
+              index === currentSlide ? "opacity-100" : "opacity-0"
+            } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
           />
         ))}
         <Button
           variant="outline"
           size="icon"
           className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80"
+          onClick={() =>
+            setCurrentSlide(
+              (prevSlice) => (prevSlice - 1 + slides.length) % slides.length
+            )
+          }
         >
           <ChevronLeftIcon className="w-4 h-4" />
         </Button>
@@ -61,6 +78,9 @@ export default function ShoppingHome() {
           variant="outline"
           size="icon"
           className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80"
+          onClick={() =>
+            setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length)
+          }
         >
           <ChevronRightIcon className="w-4 h-4" />
         </Button>
