@@ -3,10 +3,11 @@ const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 // routes
-const authRoutes = require("./routes/auth/auth.routes")
-const adminProductsRoutes = require("./routes/admin/products.routes")
-const shopProductsRoutes = require("./routes/shop/product.routes")
-const shopCartRoutes = require("./routes/shop/cart.routes")
+const authRoutes = require("./routes/auth/auth.routes");
+const adminProductsRoutes = require("./routes/admin/products.routes");
+const shopProductsRoutes = require("./routes/shop/product.routes");
+const shopCartRoutes = require("./routes/shop/cart.routes");
+const shopAddressRoutes = require("./routes/shop/address.routes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -22,14 +23,12 @@ app.use(
       "Expires",
       "Pragma",
     ],
-    credentials: true
+    credentials: true,
   })
 );
- 
 
- 
 app.use(cookieParser());
- 
+
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
@@ -38,6 +37,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin/products", adminProductsRoutes);
 app.use("/api/shop/products", shopProductsRoutes);
 app.use("/api/shop/cart", shopCartRoutes);
+app.use("/api/shop/address", shopAddressRoutes);
 
 const startServer = async () => {
   try {

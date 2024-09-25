@@ -22,11 +22,10 @@ import { Label } from "../ui/label";
 export default function ShoppingHeader() {
 
   //  This function renders the nav links
+  const navigate = useNavigate();
   const MenuItems = () => {
-    const navigate = useNavigate();
     function handleNavigate(currentMenuItem) {
-      console.log(currentMenuItem, "currentMenuItem");
-      sessionStorage.removeItem("filters");
+       sessionStorage.removeItem("filters");
       const currentFilter =
         currentMenuItem.id !== "home" && currentMenuItem.id !== "products"
           ? {
