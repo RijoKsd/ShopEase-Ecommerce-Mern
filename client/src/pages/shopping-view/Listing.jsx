@@ -44,6 +44,8 @@ export default function ShoppingListing() {
   const [isProductDetailsOpen, setIsProductDetailsOpen] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const { toast } = useToast();
+
+  const categorySearchParam = searchParams.get("category");
   function handleSort(value) {
     setSort(value);
   }
@@ -91,7 +93,7 @@ export default function ShoppingListing() {
   useEffect(() => {
     setSort("price-low-to-high");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
-  }, []);
+  }, [categorySearchParam]);
 
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {
@@ -170,3 +172,4 @@ export default function ShoppingListing() {
     </div>
   );
 }
+ 

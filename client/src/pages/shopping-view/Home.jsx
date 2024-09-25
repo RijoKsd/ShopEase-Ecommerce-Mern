@@ -19,9 +19,15 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllFilteredProducts } from "@/store/shop/products-slice";
+import {
+  fetchAllFilteredProducts,
+  fetchProductById,
+} from "@/store/shop/products-slice";
 import ShoppingProductTile from "./ProductTile";
 import { useNavigate } from "react-router-dom";
+import { toast, useToast } from "@/hooks/use-toast";
+import { addToCart } from "@/store/shop/cart-slice";
+import ProductDetailsDialog from "@/components/shopping-view/ProductDetails";
 
 const categories = [
   { id: "men", label: "Men", icon: User },
@@ -43,19 +49,49 @@ const brands = [
 export default function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [bannerTwo, bannerThree, bannerOne];
+  const [isProductDetailsOpen, setIsProductDetailsOpen] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.shopProducts);
+  const { toast } = useToast();
+  const { user } = useSelector((state) => state.auth);
+  const { products, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
 
   function handleNavigateToProductListing(currentItem, section) {
     sessionStorage.removeItem("filters");
     const currentFilter = {
       [section]: [currentItem.id],
     };
-    sessionStorage.setItem('filters', JSON.stringify(currentFilter))
+    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
 
     navigate("/shop/listing");
   }
+
+  function handleGetProductDetails(currentProductId) {
+    dispatch(fetchProductById(currentProductId));
+  }
+
+  function handleAddToCart(productId) {
+    dispatch(addToCart({ userId: user?.id, productId, quantity: 1 })).then(
+      (data) => {
+        if (data?.payload?.success) {
+          toast({
+            title: data?.payload?.message,
+            className: "bg-green-500 text-white",
+            duration: 2000,
+          });
+        }
+      }
+    );
+  }
+
+  useEffect(() => {
+    if (productDetails !== null) {
+      setIsProductDetailsOpen(true);
+    }
+  }, [productDetails]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -144,11 +180,9 @@ export default function ShoppingHome() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {brands.map((brand) => (
               <Card
-              key={brand.id}
+                key={brand.id}
                 className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() =>
-                  handleNavigateToProductListing(brand, "brand")
-                }
+                onClick={() => handleNavigateToProductListing(brand, "brand")}
               >
                 <CardContent className="flex flex-col items-center  justify-center p-6">
                   <brand.icon className="w-12 h-12 mb-4 text-primary" />
@@ -172,7 +206,12 @@ export default function ShoppingHome() {
               products
                 .slice(0, 4)
                 .map((product) => (
-                  <ShoppingProductTile key={product?._id} product={product} />
+                  <ShoppingProductTile
+                    key={product?._id}
+                    product={product}
+                    handleGetProductDetails={handleGetProductDetails}
+                    handleAddToCart={handleAddToCart}
+                  />
                 ))
             ) : (
               <h1>No products found</h1>
@@ -180,6 +219,12 @@ export default function ShoppingHome() {
           </div>
         </div>
       </section>
+
+      <ProductDetailsDialog
+        open={isProductDetailsOpen}
+        setOpen={setIsProductDetailsOpen}
+        productDetails={productDetails}
+      />
     </div>
   );
 }

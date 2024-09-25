@@ -17,18 +17,39 @@ import { logout } from "@/store/auth-slice";
 import UserCartWrapper from "./CartWrapper";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
+import { Label } from "../ui/label";
 
 export default function ShoppingHeader() {
-  const navigate = useNavigate();
 
   //  This function renders the nav links
   const MenuItems = () => {
+    const navigate = useNavigate();
+    function handleNavigate(currentMenuItem) {
+      console.log(currentMenuItem, "currentMenuItem");
+      sessionStorage.removeItem("filters");
+      const currentFilter =
+        currentMenuItem.id !== "home" && currentMenuItem.id !== "products"
+          ? {
+              category: [currentMenuItem.id],
+            }
+          : null;
+      sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+
+      navigate(currentMenuItem.path);
+    }
+
+ 
+
     return (
       <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
         {shoppingViewHeaderMenuItems.map((item) => (
-          <Link key={item.id} to={item.path} className="text-sm font-medium">
+          <Label
+            key={item.id}
+            className="text-sm font-medium cursor-pointer"
+            onClick={() => handleNavigate(item)}
+          >
             {item.label}
-          </Link>
+          </Label>
         ))}
       </nav>
     );
