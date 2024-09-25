@@ -1,4 +1,4 @@
-const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit");
+import  { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
@@ -18,7 +18,7 @@ export const addNewAddress = createAsyncThunk(
 // Get all addresses by user id
 export const fetchAllAddresses = createAsyncThunk(
   "/address/fetchAllAddresses",
-  async (userId) => {
+  async ({userId}) => {
     const response = await axios.get(
       `${backendURL}/api/shop/address/get/${userId}`
     );
@@ -66,12 +66,10 @@ const addressSlice = createSlice({
       })
       .addCase(addNewAddress.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.addresses = action.payload.data;
-      })
+       })
       .addCase(addNewAddress.rejected, (state) => {
         state.isLoading = false;
-        state.addresses = [];
-      })
+       })
       .addCase(fetchAllAddresses.pending, (state) => {
         state.isLoading = true;
         state.addresses = [];
