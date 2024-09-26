@@ -1,8 +1,13 @@
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Dialog } from "../ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import ShoppingOrderDetailsView from "./OrderDetailsView";
 
-export default function ShoppingOrders() {
+export default function ShoppingOrders( ) {
+    const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+
   return (
     <Card>
       <CardHeader>
@@ -16,20 +21,25 @@ export default function ShoppingOrders() {
               <TableHead>Order Date</TableHead>
               <TableHead>Order Status</TableHead>
               <TableHead>Order Price</TableHead>
-              <TableHead >
-                 Action
-              </TableHead>
-              
+              <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow >
+            <TableRow>
               <TableCell> 123</TableCell>
               <TableCell> 123</TableCell>
               <TableCell> 123</TableCell>
               <TableCell> 123</TableCell>
               <TableCell>
-                <Button> View Details</Button>
+                <Dialog
+                  open={openDetailsDialog}
+                  onOpenChange={setOpenDetailsDialog}
+                >
+                  <Button onClick={() => setOpenDetailsDialog(true)}>
+                    View Details
+                  </Button>
+                  <ShoppingOrderDetailsView />
+                </Dialog>
               </TableCell>
             </TableRow>
           </TableBody>
