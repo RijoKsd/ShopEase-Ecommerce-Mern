@@ -4,14 +4,15 @@ import { Button } from "../ui/button";
 import UserCartItemsContent from "./CartContent";
 import { useNavigate } from "react-router-dom";
 
-export default function UserCartWrapper({ cartItems }) {
+export default function UserCartWrapper({ cartItems, setOpenCart }) {
   const navigate = useNavigate();
   const totalCartAmount = cartItems?.reduce(
     (sum, currentItem) =>
       sum +
       (currentItem?.salePrice > 0
         ? currentItem?.salePrice
-        : currentItem?.price) *currentItem?.quantity,
+        : currentItem?.price) *
+        currentItem?.quantity,
     0
   );
   return (
@@ -33,7 +34,13 @@ export default function UserCartWrapper({ cartItems }) {
           <span className="font-bold">${totalCartAmount.toFixed(2)}</span>
         </div>
       </div>
-      <Button className="mt-6 w-full" onClick={() => navigate("/shop/checkout")}>
+      <Button
+        className="mt-6 w-full"
+        onClick={() => {
+          navigate("/shop/checkout");
+          setOpenCart(false);
+        }}
+      >
         Checkout
       </Button>
     </SheetContent>

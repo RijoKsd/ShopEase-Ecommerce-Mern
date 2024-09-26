@@ -82,6 +82,7 @@ export default function ShoppingHeader() {
           </Button>
           {/* for viewing cart items */}
           <UserCartWrapper
+            setOpenCart = {setOpenCart}
             cartItems={
               cartItems && cartItems.items && cartItems.items.length > 0
                 ? cartItems.items
