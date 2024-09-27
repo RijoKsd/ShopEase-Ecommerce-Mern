@@ -2,12 +2,15 @@ const express = require("express");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const dotenv = require("dotenv");
 // routes
 const authRoutes = require("./routes/auth/auth.routes");
 const adminProductsRoutes = require("./routes/admin/products.routes");
 const shopProductsRoutes = require("./routes/shop/product.routes");
 const shopCartRoutes = require("./routes/shop/cart.routes");
 const shopAddressRoutes = require("./routes/shop/address.routes");
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
