@@ -9,6 +9,7 @@ const adminProductsRoutes = require("./routes/admin/products.routes");
 const shopProductsRoutes = require("./routes/shop/product.routes");
 const shopCartRoutes = require("./routes/shop/cart.routes");
 const shopAddressRoutes = require("./routes/shop/address.routes");
+const shopOrderRoutes = require("./routes/shop/order.routes");
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ app.use("/api/admin/products", adminProductsRoutes);
 app.use("/api/shop/products", shopProductsRoutes);
 app.use("/api/shop/cart", shopCartRoutes);
 app.use("/api/shop/address", shopAddressRoutes);
+app.use("/api/shop/order", shopOrderRoutes);
 
 const startServer = async () => {
   try {
