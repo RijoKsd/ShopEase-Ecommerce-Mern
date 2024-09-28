@@ -19,7 +19,7 @@ const initialState = {
   pincode: "",
   notes: "",
 };
-export default function Address() {
+export default function Address({ setCurrentSelectedAddress, currentSelectedAddress }) {
   const [formData, setFormData] = useState(initialState);
   const dispatch = useDispatch();
   const { toast } = useToast();
@@ -124,6 +124,8 @@ export default function Address() {
                 addressInfo={address}
                 handleUpdateAddress={handleUpdateAddress}
                 handleDeleteAddress={handleDeleteAddress}
+                currentSelectedAddress={currentSelectedAddress}
+                setCurrentSelectedAddress={setCurrentSelectedAddress}
               />
             ))
           : null}

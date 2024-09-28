@@ -10,10 +10,27 @@ const initialState = {
   orderId: null,
 };
 
-export const createOrder = createAsyncThunk('order,createOrder', async(orderData)=>{
-    const response = await axios.post(`${backendURL}/api/shop/order/create`, orderData);
-    return response.data
-})
+export const createOrder = createAsyncThunk(
+  "order,createOrder",
+  async (orderData) => {
+    const response = await axios.post(
+      `${backendURL}/api/shop/order/create`,
+      orderData
+    );
+    return response.data;
+  }
+);
+
+export const capturePayment = createAsyncThunk(
+  "order/capturePayment",
+  async ({ paymentId, payerId, orderId }) => {
+    const response = await axios.post(
+      `${backendURL}/api/shop/order/capture-payment`,
+      { paymentId, payerId, orderId }
+    );
+    return response.data;
+  }
+);
 
 const shoppingOrderSlice = createSlice({
   name: "shoppingOrder",
@@ -21,20 +38,20 @@ const shoppingOrderSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-    .addCase(createOrder.pending, (state) => {
-      state.isLoading = true;
-    })
-    .addCase(createOrder.fulfilled, (state, action) => {
-      state.isLoading = false;
-      console.log(action.payload, "order slice")
-      state.orderId = action.payload.orderId;
-      state.approvalURL = action.payload.approvalURL
-    })
-    .addCase(createOrder.rejected, (state) => {
-      state.isLoading = false;
-      state.approvalURL = null;
-      state.orderId = null;
-    })
+      .addCase(createOrder.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createOrder.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.approvalURL = action.payload.approvalURL;
+        state.orderId = action.payload.orderId;
+        sessionStorage.setItem("currentOrderId", action?.payload?.orderId);
+      })
+      .addCase(createOrder.rejected, (state) => {
+        state.isLoading = false;
+        state.approvalURL = null;
+        state.orderId = null;
+      });
   },
 });
 

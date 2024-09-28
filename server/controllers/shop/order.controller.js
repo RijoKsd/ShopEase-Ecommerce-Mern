@@ -1,5 +1,6 @@
 const Order = require("../../models/order");
 const paypal = require("../../helpers/paypal");
+const Cart = require("../../models/cart");
 //  Saving the order in DB
 const createOrder = async (req, res) => {
   try {
@@ -15,6 +16,7 @@ const createOrder = async (req, res) => {
       orderUpdateData,
       paymentId,
       payerId,
+      cartId,
     } = req.body;
 
     const create_payment_json = {
@@ -31,7 +33,7 @@ const createOrder = async (req, res) => {
           item_list: {
             items: cartItems.map((item) => ({
               name: item.title,
-              sku: item._id,
+              sku: item.productId,
               price: item.price.toFixed(2),
               currency: "USD",
               quantity: item.quantity,
@@ -56,6 +58,7 @@ const createOrder = async (req, res) => {
       } else {
         const newOrder = new Order({
           userId,
+          cartId,
           cartItems,
           addressInfo,
           orderStatus,
@@ -89,11 +92,31 @@ const createOrder = async (req, res) => {
   }
 };
 
-
-
 //  Checking order is success or failure
 const capturePayment = async (req, res) => {
   try {
+    const { paymentId, payerId, orderId } = req.body;
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res
+        .status(404)
+        .json({ message: "Order not found", success: false });
+    }
+    order.paymentStatus = "paid";
+    order.paymentId = paymentId;
+    order.orderStatus = "confirmed";
+    order.payerId = payerId;
+
+    const currentCartId = order.cartId;
+    await Cart.findByIdAndDelete(currentCartId);
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment captured successfully",
+      data: order,
+    });
   } catch (error) {
     console.error("Error in capturing payment");
     return res

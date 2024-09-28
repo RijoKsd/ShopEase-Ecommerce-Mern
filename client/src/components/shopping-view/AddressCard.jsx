@@ -7,9 +7,22 @@ export default function AddressCard({
   addressInfo,
   handleDeleteAddress,
   handleUpdateAddress,
+  currentSelectedAddress,
+  setCurrentSelectedAddress, 
 }) {
   return (
-    <Card>
+    <Card
+      onClick={() =>
+        setCurrentSelectedAddress
+          ? setCurrentSelectedAddress(addressInfo)
+          : null
+      }
+      className={`cursor-pointer ${
+        currentSelectedAddress?._id === addressInfo?._id
+          ? "outline outline-2 outline-primary "
+          : ""
+      } `}
+    >
       <CardContent className="grid gap-4 p-4">
         <Label>
           <span className="font-bold">Address: </span>

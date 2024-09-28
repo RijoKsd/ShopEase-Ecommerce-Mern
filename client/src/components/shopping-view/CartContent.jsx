@@ -6,6 +6,7 @@ import { deleteFromCart, updateCartQuantity } from "@/store/shop/cart-slice";
 import { useToast } from "@/hooks/use-toast";
 
 export default function UserCartItemsContent({ cartItem }) {
+ 
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.auth);
   const { toast } = useToast();
