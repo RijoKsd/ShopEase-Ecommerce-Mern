@@ -5,6 +5,7 @@ import UserCartItemsContent from "@/components/shopping-view/CartContent";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { createOrder } from "@/store/shop/order-slice";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ShoppingCheckout() {
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
@@ -12,6 +13,7 @@ export default function ShoppingCheckout() {
   const { cartItems } = useSelector((store) => store.shopCart);
   const { user } = useSelector((store) => store.auth);
   const { approvalURL } = useSelector((store) => store.shopOrder);
+  const {toast} = useToast();
 
   const dispatch = useDispatch();
 
@@ -26,6 +28,24 @@ export default function ShoppingCheckout() {
   );
   //   for paypal payment
   function handleInitializePayment() {
+
+    if (cartItems.length === 0) {
+      toast({
+        title: "Cart is empty",
+        variant: "destructive",
+        duration: 2000,
+      });
+      return;
+    }
+    if(currentSelectedAddress === null) {
+      toast({
+        title: "Please select an address",
+        variant:'destructive',
+        duration: 2000
+      })
+      return
+    }
+    
     const orderData = {
       userId: user?.id,
       cartId: cartItems._id,
