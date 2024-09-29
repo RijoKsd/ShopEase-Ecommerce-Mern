@@ -80,7 +80,7 @@ const shoppingOrderSlice = createSlice({
       .addCase(getAllOrdersByUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getAllOrdersByUser,(state, action)=>{
+      .addCase(getAllOrdersByUser.fulfilled,(state, action)=>{
         state.isLoading = false;
         state.orderList = action.payload.data;
 
