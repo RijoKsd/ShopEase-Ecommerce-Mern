@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Dialog } from "../ui/dialog";
@@ -10,8 +11,32 @@ import {
   TableRow,
 } from "../ui/table";
 import AdminOrderDetailsView from "./AdminOrderDetailsView";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getAllOrdersForAdmin,
+  getOrderDetailsForAdmin,
+  resetOrderDetails,
+} from "@/store/admin/order-slice";
+import { Badge } from "../ui/badge";
 
-export default function AdminOrdersView({ openDetailsDialog, setOpenDetailsDialog }) {
+export default function AdminOrdersView() {
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const dispatch = useDispatch();
+
+  const { orderList, orderDetails } = useSelector((state) => state.adminOrder);
+
+  function handleFetchOrderDetails(orderId) {
+    dispatch(getOrderDetailsForAdmin(orderId));
+  }
+
+  useEffect(() => {
+    if (orderDetails !== null) setOpenDetailsDialog(true);
+  }, [orderDetails]);
+
+  useEffect(() => {
+    dispatch(getAllOrdersForAdmin());
+  }, [dispatch]);
+
   return (
     <Card>
       <CardHeader>
@@ -29,18 +54,47 @@ export default function AdminOrdersView({ openDetailsDialog, setOpenDetailsDialo
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell> 123</TableCell>
-              <TableCell> 123</TableCell>
-              <TableCell> 123</TableCell>
-              <TableCell> 123</TableCell>
-              <TableCell>
-                <Dialog open = {openDetailsDialog} onOpenChange={setOpenDetailsDialog}>
-                  <Button onClick= { ()=> setOpenDetailsDialog(true)}> View Details</Button>
-                  <AdminOrderDetailsView />
-                </Dialog>
-              </TableCell>
-            </TableRow>
+            {orderList && orderList.length > 0
+              ? orderList.map((orderItem) => (
+                  <TableRow key={orderItem?._id}>
+                    <TableCell> {orderItem?._id}</TableCell>
+                    <TableCell> {orderItem?.orderDate.split("T")[0]}</TableCell>
+                    <TableCell>
+                      <Badge
+                        className={`py-1 px-3 ${
+                          orderItem.orderStatus === "confirmed"
+                            ? "bg-green-500"
+                            : "bg-black"
+                        }`}
+                      >
+                        {orderItem?.orderStatus}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>$ {orderItem?.totalAmount}</TableCell>
+                    <TableCell>
+                      <Dialog
+                        open={openDetailsDialog}
+                        onOpenChange={() => {
+                          setOpenDetailsDialog(false);
+                          dispatch(resetOrderDetails());
+                        }}
+                      >
+                        <Button
+                          onClick={() =>
+                            handleFetchOrderDetails(orderItem?._id)
+                          }
+                        >
+                          View Details
+                        </Button>
+                        <AdminOrderDetailsView
+                          key={orderItem?._id}
+                          orderDetails={orderDetails}
+                        />
+                      </Dialog>
+                    </TableCell>
+                  </TableRow>
+                ))
+              : null}
           </TableBody>
         </Table>
       </CardContent>
