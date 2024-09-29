@@ -10,9 +10,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { Avatar, AvatarFallback } from "../ui/avatar";
+ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { logout } from "@/store/auth-slice";
 import UserCartWrapper from "./CartWrapper";
 import { useEffect, useState } from "react";

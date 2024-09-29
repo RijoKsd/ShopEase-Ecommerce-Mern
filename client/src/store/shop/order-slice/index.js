@@ -8,8 +8,8 @@ const initialState = {
   approvalURL: null,
   isLoading: false,
   orderId: null,
-  orderList:[],
-  orderDetails: null
+  orderList: [],
+  orderDetails: null,
 };
 
 export const createOrder = createAsyncThunk(
@@ -34,8 +34,6 @@ export const capturePayment = createAsyncThunk(
   }
 );
 
-
- 
 export const getAllOrdersByUser = createAsyncThunk(
   "order/getAllOrdersByUser",
   async (userId) => {
@@ -45,7 +43,6 @@ export const getAllOrdersByUser = createAsyncThunk(
     return response.data;
   }
 );
-
 
 export const getOrderDetails = createAsyncThunk(
   "order/getOrderDetails",
@@ -60,7 +57,11 @@ export const getOrderDetails = createAsyncThunk(
 const shoppingOrderSlice = createSlice({
   name: "shoppingOrder",
   initialState,
-  reducers: {},
+  reducers: {
+    resetOrderDetails: (state, action) => {
+      state.orderDetails = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createOrder.pending, (state) => {
@@ -80,10 +81,9 @@ const shoppingOrderSlice = createSlice({
       .addCase(getAllOrdersByUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getAllOrdersByUser.fulfilled,(state, action)=>{
+      .addCase(getAllOrdersByUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.orderList = action.payload.data;
-
       })
       .addCase(getAllOrdersByUser.rejected, (state) => {
         state.isLoading = false;
@@ -104,3 +104,5 @@ const shoppingOrderSlice = createSlice({
 });
 
 export default shoppingOrderSlice.reducer;
+
+export const { resetOrderDetails}  = shoppingOrderSlice.actions;
