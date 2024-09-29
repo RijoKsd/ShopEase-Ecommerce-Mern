@@ -61,6 +61,8 @@ export default function ShoppingOrders() {
                         className={`py-1 px-3 ${
                           orderItem.orderStatus === "confirmed"
                             ? "bg-green-500"
+                            : orderItem?.orderStatus === "rejected"
+                            ? "bg-red-500"
                             : "bg-black"
                         }`}
                       >
@@ -84,7 +86,10 @@ export default function ShoppingOrders() {
                         >
                           View Details
                         </Button>
-                        <ShoppingOrderDetailsView key={orderItem?._id} orderDetails={orderDetails} />
+                        <ShoppingOrderDetailsView
+                          key={orderItem?._id}
+                          orderDetails={orderDetails}
+                        />
                       </Dialog>
                     </TableCell>
                   </TableRow>

@@ -4,7 +4,9 @@ import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import CommonForm from "../common/Form";
 import { Badge } from "../ui/badge";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllOrdersForAdmin, getOrderDetailsForAdmin, updateOrderStatus } from "@/store/admin/order-slice";
+import { useToast } from "@/hooks/use-toast";
 
 const initialState = {
   status: "",
@@ -12,15 +14,33 @@ const initialState = {
 export default function AdminOrderDetailsView({ orderDetails }) {
   const [formData, setFormData] = useState(initialState);
   const { user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const {toast} = useToast();
 
   function handleSubmit() {
-    console.log(formData);
+     dispatch(
+      updateOrderStatus({
+        id: orderDetails?._id,
+        orderStatus: formData.status,
+      })
+    ).then(data=>{
+      if(data?.payload?.success){
+        dispatch(getOrderDetailsForAdmin(orderDetails?._id))
+        dispatch(getAllOrdersForAdmin());
+        setFormData(initialState)
+        toast({
+          title: data?.payload?.message,
+          className: "bg-green-500 text-white",
+          duration: 2000,
+        });
+      }
+    })
   }
 
   return (
-    <DialogContent className="sm:max-w-[600px]">
+    <DialogContent className="sm:max-w-[600px]  h-full overflow-auto ">
       <DialogTitle>Order Details</DialogTitle>
-      <div className="grid gap-6">
+      <div className="grid gap-6  ">
         <div className="grid gap-2">
           <div className="flex mt-6 items-center justify-between">
             <p className="font-medium">Order ID</p>
@@ -49,6 +69,8 @@ export default function AdminOrderDetailsView({ orderDetails }) {
                 className={`py-1 px-3 ${
                   orderDetails?.orderStatus === "confirmed"
                     ? "bg-green-500"
+                    : orderDetails?.orderStatus === "rejected"
+                    ? "bg-red-500"
                     : "bg-black"
                 }`}
               >

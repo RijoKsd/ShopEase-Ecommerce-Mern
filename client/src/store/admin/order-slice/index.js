@@ -23,6 +23,17 @@ export const getOrderDetailsForAdmin = createAsyncThunk(
   }
 );
 
+export const updateOrderStatus = createAsyncThunk(
+  "adminOrder/updateOrderStatus",
+  async ({ id, orderStatus }) => {
+    const response = await axios.put(
+      `${backendURL}/api/admin/orders/update-order-status/${id}`,
+      { orderStatus }
+    );
+    return response.data;
+  }
+);
+
 const initialState = {
   isLoading: false,
   orderList: [],
@@ -35,7 +46,7 @@ const adminOrderSlice = createSlice({
   reducers: {
     resetOrderDetails: (state, action) => {
       state.orderDetails = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder

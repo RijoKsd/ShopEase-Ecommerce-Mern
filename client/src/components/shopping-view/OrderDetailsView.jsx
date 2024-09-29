@@ -7,7 +7,7 @@ import { Separator } from "../ui/separator";
 export default function ShoppingOrderDetailsView({ orderDetails }) {
   const { user } = useSelector((store) => store.auth);
   return (
-    <DialogContent className="sm:max-w-[600px]">
+    <DialogContent className="sm:max-w-[600px]  h-full overflow-auto ">
       <DialogTitle>Order Details</DialogTitle>
       <div className="grid gap-6">
         <div className="grid gap-2">
@@ -38,6 +38,8 @@ export default function ShoppingOrderDetailsView({ orderDetails }) {
                 className={`py-1 px-3 ${
                   orderDetails?.orderStatus === "confirmed"
                     ? "bg-green-500"
+                    : orderDetails?.orderStatus === "rejected"
+                    ? "bg-red-500"
                     : "bg-black"
                 }`}
               >
