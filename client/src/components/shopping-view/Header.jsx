@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { shoppingViewHeaderMenuItems } from "@/config";
 import { House, LogOut, Menu, ShoppingCart, User } from "lucide-react";
@@ -23,7 +23,10 @@ export default function ShoppingHeader() {
 
   //  This function renders the nav links
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams,  setSearchParams] = useSearchParams();
   const MenuItems = () => {
+
     function handleNavigate(currentMenuItem) {
        sessionStorage.removeItem("filters");
       const currentFilter =
@@ -33,8 +36,11 @@ export default function ShoppingHeader() {
             }
           : null;
       sessionStorage.setItem("filters", JSON.stringify(currentFilter));
-
-      navigate(currentMenuItem.path);
+      location.pathname.includes("listing") && currentFilter !== null
+        ? setSearchParams(
+            new URLSearchParams(`?category=${currentMenuItem.id}`)
+          )
+        : navigate(currentMenuItem.path);
     }
 
  
